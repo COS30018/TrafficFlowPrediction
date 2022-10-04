@@ -22,7 +22,15 @@ def process_data(data):
     # Reorder the index
     boroondara_df = boroondara_df.reset_index(drop=True)
     # Scale the traffic values
-    boroondara_df['Traffic'] = (boroondara_df['Traffic'] - boroondara_df['Traffic'].min())/(boroondara_df['Traffic'].max()-boroondara_df['Traffic'].min())
+    boroondara_df['Traffic'] = (
+            boroondara_df['Traffic'] - boroondara_df['Traffic'].min()) / \
+            (boroondara_df['Traffic'].max()-boroondara_df['Traffic'].min()
+    )
+
+    # Splt into training and testing data
+    train_df = boroondara_df[boroondara_df.index % 8 != 0]
+    test_df  = boroondara_df[boroondara_df.index % 8 == 0]
+
 
 if __name__ == '__main__':
     process_data("data/boroondara.csv")
