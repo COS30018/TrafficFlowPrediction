@@ -20,6 +20,15 @@ def process_data(train):
 
     # Sort rows
     boroondara_df = boroondara_df.sort_values(by=['SCATS Number', 'Location', 'Start Time'])
+    # Reorder the index
+    boroondara_df = boroondara_df.reset_index(drop=True)
+
+    train_df = boroondara_df.iloc[boroondara_df.index % 8 != 0]
+    test_df  = boroondara_df.iloc[boroondara_df.index % 8 == 0]
+
+    print(boroondara_df)
+    print(train_df)
+    print(test_df)
 
 if __name__ == '__main__':
-    process_data("boroondara.csv")
+    process_data("data/boroondara.csv")
