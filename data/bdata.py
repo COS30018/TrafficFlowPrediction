@@ -3,12 +3,11 @@ Processing the data
 """
 import numpy as np  # Provides arrays, matrixies, and maths functions
 import pandas as pd # Data analysis and manipulation
-from sklearn.preprocessing import MinMaxScaler
 
 
-def process_data(train):
+def process_data(data):
     # pandas DataFrame of boroondara data
-    boroondara_df = pd.read_csv(train, encoding='utf-8').fillna(0)
+    boroondara_df = pd.read_csv(data, encoding='utf-8').fillna(0)
 
     # Drop columns that are irrelevant to training the model
     boroondara_df = boroondara_df.drop(['CD_MELWAY' ,'NB_LATITUDE', 'NB_LONGITUDE', 'HF VicRoads Internal', 'VR Internal Stat', 'VR Internal Loc', 'NB_TYPE_SURVEY'], axis='columns')
@@ -22,13 +21,8 @@ def process_data(train):
     boroondara_df = boroondara_df.sort_values(by=['SCATS Number', 'Location', 'Start Time'])
     # Reorder the index
     boroondara_df = boroondara_df.reset_index(drop=True)
-
-    train_df = boroondara_df.iloc[boroondara_df.index % 8 != 0]
-    test_df  = boroondara_df.iloc[boroondara_df.index % 8 == 0]
-
-    print(boroondara_df)
-    print(train_df)
-    print(test_df)
+    # Scale the traffic values
+    boroondara_df['Traffic'] = (boroondara_df['Traffic'] - boroondara_df['Traffic'].min())/(boroondara_df['Traffic'].max()-boroondara_df['Traffic'].min())
 
 if __name__ == '__main__':
     process_data("data/boroondara.csv")
