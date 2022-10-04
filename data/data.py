@@ -6,7 +6,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 
-def process_data(train, test, lags):
+def process_data(train="train.csv", test="test.csv", lags=12):
     """Process data
     Reshape and split train\test data.
 
@@ -22,7 +22,26 @@ def process_data(train, test, lags):
         scaler: StandardScaler.
     """
     attr = 'Lane 1 Flow (Veh/5 Minutes)'
+
+    
+
     df1 = pd.read_csv(train, encoding='utf-8').fillna(0)
+    print("test")
+    print(df1)
+    print("printing df1[attr]")
+    print(df1[attr])
+
+    names = ["SCATS Number", "Location", "CD_MELWAY", "NB_LATITUDE", "NB_LONGITUDE", "HF VicRoads Internal", "VR Internal Stat", "VR Internal Loc", "NB_TYPE_SURVEY", "Start Time"]
+
+    cols = list(pd.read_csv("boroondara.csv", nrows=1))
+    dftest = pd.read_csv("boroondara.csv", usecols=[i for i in cols if i not in names], encoding="utf-8").fillna(0)
+    
+    print("printing iloc")
+    print(dftest.iloc[0])
+    
+
+    exit
+
     df2 = pd.read_csv(test, encoding='utf-8').fillna(0)
 
     # scaler = StandardScaler().fit(df1[attr].values)
@@ -46,3 +65,4 @@ def process_data(train, test, lags):
     y_test = test[:, -1]
 
     return X_train, y_train, X_test, y_test, scaler
+process_data()
