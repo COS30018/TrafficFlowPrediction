@@ -5,7 +5,7 @@ import math
 import warnings
 import numpy as np
 import pandas as pd
-from data.data import process_data
+from data.data import process_data, test_process_data
 from keras.models import load_model
 from keras.utils.vis_utils import plot_model
 import sklearn.metrics as metrics
@@ -72,7 +72,7 @@ def plot_results(y_true, y_preds, names):
         names: List, Method names.
     """
     d = '2016-3-4 00:00'
-    x = pd.date_range(d, periods=288, freq='5min')
+    x = pd.date_range(d, periods=96, freq='15min')
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -103,7 +103,8 @@ def main():
     lag = 12
     file1 = 'data/train.csv'
     file2 = 'data/test.csv'
-    _, _, X_test, y_test, scaler = process_data(file1, file2, lag)
+    test_file = 'data/boroondara.csv'
+    _, _, X_test, y_test, scaler = test_process_data(test_file, lag)
     y_test = scaler.inverse_transform(y_test.reshape(-1, 1)).reshape(1, -1)[0]
 
     y_preds = []
@@ -116,11 +117,11 @@ def main():
         plot_model(model, to_file=file, show_shapes=True)
         predicted = model.predict(X_test)
         predicted = scaler.inverse_transform(predicted.reshape(-1, 1)).reshape(1, -1)[0]
-        y_preds.append(predicted[:288])
+        y_preds.append(predicted[:96])
         print(name)
         eva_regress(y_test, predicted)
 
-    plot_results(y_test[: 288], y_preds, names)
+    plot_results(y_test[: 96], y_preds, names)
 
 
 if __name__ == '__main__':

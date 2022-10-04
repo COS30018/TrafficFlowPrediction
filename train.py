@@ -6,7 +6,7 @@ import warnings
 import argparse
 import numpy as np
 import pandas as pd
-from data.data import process_data
+from data.data import process_data, test_process_data
 from model import model
 from keras.models import Model
 from keras.callbacks import EarlyStopping
@@ -89,7 +89,8 @@ def main(argv):
     config = {"batch": 256, "epochs": 600}
     file1 = 'data/train.csv'
     file2 = 'data/test.csv'
-    X_train, y_train, _, _, _ = process_data(file1, file2, lag)
+    test_file = 'data/boroondara.csv'
+    X_train, y_train, _, _, _ = test_process_data(test_file, lag)
 
     if args.model == 'lstm':
         X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
