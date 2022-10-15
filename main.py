@@ -5,7 +5,7 @@ import math
 import warnings
 import numpy as np
 import pandas as pd
-from data.data import process_data
+from data.bdata import process_data
 from keras.models import load_model
 from keras.utils.vis_utils import plot_model
 import sklearn.metrics as metrics
@@ -101,8 +101,8 @@ def main():
     names = ['LSTM', 'GRU', 'SAEs']
 
     lag = 12
-    file1 = 'data/train.csv'
-    file2 = 'data/test.csv'
+    file1 = 'data/boroondaraTrain.csv'
+    file2 = 'data/boroondaraTest.csv'
     _, _, X_test, y_test, scaler = process_data(file1, file2, lag)
     y_test = scaler.inverse_transform(y_test.reshape(-1, 1)).reshape(1, -1)[0]
 

@@ -85,8 +85,8 @@ def main(argv):
         help="Model to train.")
     args = parser.parse_args()
 
-    lag = 96
-    config = {"batch": 256, "epochs": 600}
+    lag = 12
+    config = {"batch": 256, "epochs": 10}
     file1 = 'data/boroondaraTrain.csv'
     file2 = 'data/boroondaraTest.csv'
     X_train, y_train, _, _, _ = process_data(file1, file2, lag)

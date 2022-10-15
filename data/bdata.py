@@ -64,4 +64,4 @@ def process_data(train, test, lags):
 
 
 if __name__ == '__main__':
-    process_data('data/boroondaraTrain.csv', 'data/boroondaraTest.csv', 96)
+    process_data('data/boroondaraTrain.csv', 'data/boroondaraTest.csv', 12)
