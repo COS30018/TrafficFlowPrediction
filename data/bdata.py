@@ -28,23 +28,13 @@ def process_data(train, test, lags):
     # Reorder the index
     train_df = train_df.reset_index(drop=True)
     test_df = test_df.reset_index(drop=True)
+    
     # Scale the traffic values
-    #train_df['Traffic'] = (
-    #        train_df['Traffic'] - train_df['Traffic'].min()) / \
-    #        (train_df['Traffic'].max()-train_df['Traffic'].min()
-    #)
-    #test_df['Traffic'] = (
-    #        test_df['Traffic'] - test_df['Traffic'].min()) / \
-    #        (test_df['Traffic'].max()-test_df['Traffic'].min()
-    #)
-
-    train_df.to_csv('train.csv')
-    test_df.to_csv('test.csv')
-
     scaler = MinMaxScaler(feature_range=(0, 1)).fit(train_df['Traffic'].values.reshape(-1, 1))
     flow1 = scaler.transform(train_df['Traffic'].values.reshape(-1, 1)).reshape(1, -1)[0]
     flow2 = scaler.transform(test_df['Traffic'].values.reshape(-1, 1)).reshape(1, -1)[0]
 
+    # Group data into batches
     train, test = [], []
     for i in range(lags, len(flow1)):
         train.append(flow1[i - lags: i + 1])
