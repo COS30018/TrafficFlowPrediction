@@ -11,6 +11,7 @@ from keras.utils.vis_utils import plot_model
 import sklearn.metrics as metrics
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import os
 warnings.filterwarnings("ignore")
 
 
@@ -94,33 +95,49 @@ def plot_results(y_true, y_preds, names):
 
 
 def main():
-    lstm = load_model('model/lstm.h5')
-    gru = load_model('model/gru.h5')
-    saes = load_model('model/saes.h5')
-    models = [lstm, gru, saes]
-    names = ['LSTM', 'GRU', 'SAEs']
 
-    lag = 12
-    file1 = 'data/boroondaraTrain.csv'
-    file2 = 'data/boroondaraTest.csv'
-    _, _, X_test, y_test, scaler = process_data(file1, file2, lag)
-    y_test = scaler.inverse_transform(y_test.reshape(-1, 1)).reshape(1, -1)[0]
+    data_df = pd.read_csv('data/boroondara.csv', encoding='utf-8').fillna(0)
 
-    y_preds = []
-    for name, model in zip(names, models):
-        if name == 'SAEs':
-            X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]))
-        else:
-            X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
-        file = 'images/' + name + '.png'
-        plot_model(model, to_file=file, show_shapes=True)
-        predicted = model.predict(X_test)
-        predicted = scaler.inverse_transform(predicted.reshape(-1, 1)).reshape(1, -1)[0]
-        y_preds.append(predicted[:288])
-        print(name)
-        eva_regress(y_test, predicted)
+    # Iterate over each unique SCATS
+    for scats in data_df['SCATS Number'].unique():
+        scats_str = str(scats)
 
-    plot_results(y_test[: 288], y_preds, names)
+        print("Plotting for: "+scats_str)
+
+        # Load models for the currect SCATS
+        lstm = load_model('model/lstm/'+scats_str+'.h5')
+        gru = load_model('model/gru/'+scats_str+'.h5')
+        saes = load_model('model/saes/'+scats_str+'.h5')
+        models = [lstm, gru, saes]
+        names = ['LSTM', 'GRU', 'SAEs']
+    
+        scats_df = data_df.loc[data_df['SCATS Number'] == scats]
+        lag = 12
+        _, _, X_test, y_test, scaler = process_data(scats_df, lag)
+        y_test = scaler.inverse_transform(y_test.reshape(-1, 1)).reshape(1, -1)[0]
+    
+        y_preds = []
+        for name, model in zip(names, models):
+            if name == 'SAEs':
+                X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]))
+            else:
+                X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
+            
+            if not os.path.exists('images/'+scats_str):
+                os.makedirs('images/'+scats_str)
+            
+            file = 'images/' + scats_str + '/' + name + '.png'
+            
+            plot_model(model, to_file=file, show_shapes=True)
+            predicted = model.predict(X_test)
+            predicted = scaler.inverse_transform(predicted.reshape(-1, 1)).reshape(1, -1)[0]
+            
+            y_preds.append(predicted[:288])
+            print(name)
+            
+            eva_regress(y_test, predicted)
+    
+        plot_results(y_test[: 288], y_preds, names)
 
 
 if __name__ == '__main__':
