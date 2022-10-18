@@ -110,9 +110,11 @@ def main():
         saes = load_model('model/saes/'+scats_str+'.h5')
         models = [lstm, gru, saes]
         names = ['LSTM', 'GRU', 'SAEs']
-    
+
+        # Get a datafram filtered on just the current SCATS
         scats_df = data_df.loc[data_df['SCATS Number'] == scats]
         lag = 12
+
         _, _, X_test, y_test, scaler = process_data(scats_df, lag)
         y_test = scaler.inverse_transform(y_test.reshape(-1, 1)).reshape(1, -1)[0]
     
@@ -123,15 +125,15 @@ def main():
             else:
                 X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
             
+            # Make folders for the plot images
             if not os.path.exists('images/'+scats_str):
                 os.makedirs('images/'+scats_str)
-            
             file = 'images/' + scats_str + '/' + name + '.png'
-            
+            # Plot the model
             plot_model(model, to_file=file, show_shapes=True)
+
             predicted = model.predict(X_test)
             predicted = scaler.inverse_transform(predicted.reshape(-1, 1)).reshape(1, -1)[0]
-            
             y_preds.append(predicted[:288])
             print(name)
             
