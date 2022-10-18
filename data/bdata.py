@@ -11,9 +11,6 @@ def process_data(data_df, lags):
     # train_df = pd.read_csv(train, encoding='utf-8').fillna(0)
     # test_df  = pd.read_csv(test,  encoding='utf-8').fillna(0)
 
-
-    # Dataframe of boroondara data
-    data_df = pd.read_csv('data/boroondara.csv', encoding='utf-8').fillna(0)
     # Split into training and testing
     train_df = data_df[data_df.index % 8 != 0]
     test_df  = data_df[data_df.index % 8 == 0]
@@ -67,6 +64,6 @@ if __name__ == '__main__':
     
     for scats in data_df['SCATS Number'].unique():
         
-        data_df = data_df.loc[data_df['SCATS Number'] == scats]
+        scats_df = data_df.loc[data_df['SCATS Number'] == scats]
 
-        X_train, y_train, X_test, y_test, scaler = process_data(data_df, 12)
+        X_train, y_train, X_test, y_test, scaler = process_data(scats_df, 12)
