@@ -1,14 +1,22 @@
 """
 Processing the data
 """
+from enum import unique
 import numpy as np  # Provides arrays, matrixies, and maths functions
 import pandas as pd # Data analysis and manipulation
 from sklearn.preprocessing import MinMaxScaler
 
-def process_data(train, test, lags):
+def process_data(data_df, lags):
     # pandas DataFrame of boroondara data
-    train_df = pd.read_csv(train, encoding='utf-8').fillna(0)
-    test_df  = pd.read_csv(test,  encoding='utf-8').fillna(0)
+    # train_df = pd.read_csv(train, encoding='utf-8').fillna(0)
+    # test_df  = pd.read_csv(test,  encoding='utf-8').fillna(0)
+
+
+    # Dataframe of boroondara data
+    data_df = pd.read_csv('data/boroondara.csv', encoding='utf-8').fillna(0)
+    # Split into training and testing
+    train_df = data_df[data_df.index % 8 != 0]
+    test_df  = data_df[data_df.index % 8 == 0]
 
     # Drop columns that are irrelevant to training the model
     train_df = train_df.drop(['CD_MELWAY' ,'NB_LATITUDE', 'NB_LONGITUDE', 'HF VicRoads Internal', 'VR Internal Stat', 'VR Internal Loc', 'NB_TYPE_SURVEY'], axis='columns')
@@ -54,4 +62,11 @@ def process_data(train, test, lags):
 
 
 if __name__ == '__main__':
-    process_data('data/boroondaraTrain.csv', 'data/boroondaraTest.csv', 12)
+
+    data_df = pd.read_csv('data/boroondara.csv', encoding='utf-8').fillna(0)
+    
+    for scats in data_df['SCATS Number'].unique():
+        
+        data_df = data_df.loc[data_df['SCATS Number'] == scats]
+
+        X_train, y_train, X_test, y_test, scaler = process_data(data_df, 12)
