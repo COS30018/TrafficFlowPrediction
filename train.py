@@ -96,7 +96,7 @@ def main(argv):
 
         X_train, y_train, _, _, _ = process_data(scats_df, lag)
     
-        name = args.model + str(scats)
+        name = args.model + '/' + str(scats)
 
         if args.model == 'lstm':
             X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
