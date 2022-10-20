@@ -5,7 +5,7 @@ import math
 import warnings
 import numpy as np
 import pandas as pd
-from data.bdata import process_data
+from data.data import process_data
 from keras.models import load_model
 from keras.utils.vis_utils import plot_model
 import sklearn.metrics as metrics
@@ -93,7 +93,7 @@ def plot_results(y_true, y_preds, names, scats_str):
 
     plt.show()
 
-    plt.savefig('images/'+scats_str+'/result.png')
+    plt.savefig('images/'+scats_str+'/Result.png')
 
 
 def main():
@@ -103,8 +103,6 @@ def main():
     # Iterate over each unique SCATS
     for scats in data_df['SCATS Number'].unique():
         scats_str = str(scats)
-
-        print("Plotting for: "+scats_str)
 
         # Load models for the currect SCATS
         lstm = load_model('model/lstm/'+scats_str+'.h5')
