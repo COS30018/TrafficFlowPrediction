@@ -1,35 +1,45 @@
 """
 Processing the data
 """
-import numpy as np
-import pandas as pd
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from enum import unique
+import numpy as np  # Provides arrays, matrixies, and maths functions
+import pandas as pd # Data analysis and manipulation
+from sklearn.preprocessing import MinMaxScaler
 
+def process_data(data_df, lags):
+    # pandas DataFrame of boroondara data
+    # train_df = pd.read_csv(train, encoding='utf-8').fillna(0)
+    # test_df  = pd.read_csv(test,  encoding='utf-8').fillna(0)
 
-def process_data(train, test, lags):
-    """Process data
-    Reshape and split train\test data.
+    # Split into training and testing
+    train_df = data_df[data_df.index % 8 != 0]
+    test_df  = data_df[data_df.index % 8 == 0]
 
-    # Arguments
-        train: String, name of .csv train file.
-        test: String, name of .csv test file.
-        lags: integer, time lag.
-    # Returns
-        X_train: ndarray.
-        y_train: ndarray.
-        X_test: ndarray.
-        y_test: ndarray.
-        scaler: StandardScaler.
-    """
-    attr = 'Lane 1 Flow (Veh/5 Minutes)'
-    df1 = pd.read_csv(train, encoding='utf-8').fillna(0)
-    df2 = pd.read_csv(test, encoding='utf-8').fillna(0)
+    # Drop columns that are irrelevant to training the model
+    train_df = train_df.drop(['CD_MELWAY' ,'NB_LATITUDE', 'NB_LONGITUDE', 'HF VicRoads Internal', 'VR Internal Stat', 'VR Internal Loc', 'NB_TYPE_SURVEY'], axis='columns')
+    test_df = test_df.drop(['CD_MELWAY' ,'NB_LATITUDE', 'NB_LONGITUDE', 'HF VicRoads Internal', 'VR Internal Stat', 'VR Internal Loc', 'NB_TYPE_SURVEY'], axis='columns')
 
-    # scaler = StandardScaler().fit(df1[attr].values)
-    scaler = MinMaxScaler(feature_range=(0, 1)).fit(df1[attr].values.reshape(-1, 1))
-    flow1 = scaler.transform(df1[attr].values.reshape(-1, 1)).reshape(1, -1)[0]
-    flow2 = scaler.transform(df2[attr].values.reshape(-1, 1)).reshape(1, -1)[0]
+    # Convert columns of values at times into rows
+    train_df = pd.melt(train_df,
+            id_vars=['SCATS Number', 'Location', 'Start Time'],
+            var_name='Time', value_name='Traffic')
+    test_df = pd.melt(test_df,
+            id_vars=['SCATS Number', 'Location', 'Start Time'],
+            var_name='Time', value_name='Traffic')
 
+    # Sort rows
+    train_df = train_df.sort_values(by=['SCATS Number', 'Location', 'Start Time'])
+    test_df = test_df.sort_values(by=['SCATS Number', 'Location', 'Start Time'])
+    # Reorder the index
+    train_df = train_df.reset_index(drop=True)
+    test_df = test_df.reset_index(drop=True)
+    
+    # Scale the traffic values
+    scaler = MinMaxScaler(feature_range=(0, 1)).fit(train_df['Traffic'].values.reshape(-1, 1))
+    flow1 = scaler.transform(train_df['Traffic'].values.reshape(-1, 1)).reshape(1, -1)[0]
+    flow2 = scaler.transform(test_df['Traffic'].values.reshape(-1, 1)).reshape(1, -1)[0]
+
+    # Group data into batches
     train, test = [], []
     for i in range(lags, len(flow1)):
         train.append(flow1[i - lags: i + 1])
@@ -46,3 +56,14 @@ def process_data(train, test, lags):
     y_test = test[:, -1]
 
     return X_train, y_train, X_test, y_test, scaler
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('data/boroondara.csv', encoding='utf-8').fillna(0)
+    
+    for scats in data_df['SCATS Number'].unique():
+        
+        scats_df = data_df.loc[data_df['SCATS Number'] == scats]
+
+        X_train, y_train, X_test, y_test, scaler = process_data(scats_df, 12)
