@@ -1,7 +1,7 @@
 """
 Defination of NN model
 """
-from keras.layers import Dense, Dropout, Activation, LSTM, GRU
+from keras.layers import Dense, Dropout, Activation, LSTM, GRU, SimpleRNN
 from keras.models import Sequential
 
 
@@ -90,3 +90,22 @@ def get_saes(layers):
     models = [sae1, sae2, sae3, saes]
 
     return models
+
+
+def get_rnn(units):
+    """RNN(Recurrant Neural Network)
+    Build RNN Model.
+
+    # Arguments
+        units: List(int), number of input, output and hidden units.
+    # Returns
+        model: Model, nn model.
+    """
+
+    model = Sequential()
+    model.add(SimpleRNN(units[1], input_shape=(units[0], 1), return_sequences=True))
+    model.add(SimpleRNN(units[2]))
+    model.add(Dropout(0.2))
+    model.add(Dense(units[3], activation='sigmoid'))
+
+    return model
