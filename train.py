@@ -110,6 +110,10 @@ def main(argv):
             X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1]))
             m = model.get_saes([lag, 400, 400, 400, 1])
             train_seas(m, X_train, y_train, name, config)
+        if args.model == 'rnn':
+            X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
+            m = model.get_rnn([lag, 64, 64, 1])
+            train_model(m, X_train, y_train, name, config)
 
 
 if __name__ == '__main__':

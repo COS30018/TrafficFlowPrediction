@@ -108,8 +108,9 @@ def main():
         lstm = load_model('model/lstm/'+scats_str+'.h5')
         gru = load_model('model/gru/'+scats_str+'.h5')
         saes = load_model('model/saes/'+scats_str+'.h5')
-        models = [lstm, gru, saes]
-        names = ['LSTM', 'GRU', 'SAEs']
+        rnn = load_model('model/rnn/'+scats_str+'.h5')
+        models = [lstm, gru, saes, rnn]
+        names = ['LSTM', 'GRU', 'SAEs', 'RNN']
 
         # Get a datafram filtered on just the current SCATS
         scats_df = data_df.loc[data_df['SCATS Number'] == scats]
