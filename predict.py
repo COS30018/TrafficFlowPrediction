@@ -47,7 +47,6 @@ def precict(scats, datetime):
     gru = load_model('model/gru/'+scats_str+'.h5')
     saes = load_model('model/saes/'+scats_str+'.h5')
     rnn = load_model('model/rnn/'+scats_str+'.h5')
-    models = [lstm, gru, saes, rnn]
 
     matching_rows = data_df.index[(data_df['SCATS Number'] == scats) & (data_df['Start Time'] == datetime)]
     input_df = data_df.iloc[matching_rows[0]-13:matching_rows[0]-1]
@@ -60,9 +59,19 @@ def precict(scats, datetime):
     saes_pred = saes.predict(input_array)
     rnn_pred  = rnn.predict(input_array)
     
-    return lstm_pred, gru_pred, saes_pred, rnn_pred
+    lstm_pred = scaler.inverse_transform(lstm_pred.reshape(-1, 1)).reshape(1, -1)[0]
+    gru_pred  = scaler.inverse_transform(gru_pred.reshape(-1, 1)).reshape(1, -1)[0]
+    saes_pred = scaler.inverse_transform(saes_pred.reshape(-1, 1)).reshape(1, -1)[0]
+    rnn_pred  = scaler.inverse_transform(rnn_pred.reshape(-1, 1)).reshape(1, -1)[0]
+    
+    return lstm_pred[0], gru_pred[0], saes_pred[0], rnn_pred[0]
 
     
 if __name__ == '__main__':
-    precict(970, datetime.datetime(2006, 10, 10, 0, 15))
+    lstm, gru, saes, rnn = precict(970, datetime.datetime(2006, 10, 10, 0, 15))
+    
+    print(lstm)
+    print(gru)
+    print(saes)
+    print(rnn)
 
