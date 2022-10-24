@@ -86,24 +86,34 @@ def main(argv):
     args = parser.parse_args()
 
     lag = 12
-    config = {"batch": 256, "epochs": 600}
-    file1 = 'data/train.csv'
-    file2 = 'data/test.csv'
-    test_file = 'data/boroondara.csv'
-    X_train, y_train, _, _, _ = test_process_data(test_file, lag)
+    config = {"batch": 256, "epochs": 1}
+    data_df = pd.read_csv('data/boroondara.csv', encoding='utf-8').fillna(0) # Dataframe of boroondara data
+    
+    # Break dataframe into different SCATS
+    for scats in data_df['SCATS Number'].unique():
+        
+        scats_df = data_df.loc[data_df['SCATS Number'] == scats]        
 
-    if args.model == 'lstm':
-        X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
-        m = model.get_lstm([12, 64, 64, 1])
-        train_model(m, X_train, y_train, args.model, config)
-    if args.model == 'gru':
-        X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
-        m = model.get_gru([12, 64, 64, 1])
-        train_model(m, X_train, y_train, args.model, config)
-    if args.model == 'saes':
-        X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1]))
-        m = model.get_saes([12, 400, 400, 400, 1])
-        train_seas(m, X_train, y_train, args.model, config)
+        X_train, y_train, _, _, _ = process_data(scats_df, lag)
+    
+        name = args.model + '/' + str(scats)
+
+        if args.model == 'lstm':
+            X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
+            m = model.get_lstm([lag, 64, 64, 1])
+            train_model(m, X_train, y_train, name, config)
+        if args.model == 'gru':
+            X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
+            m = model.get_gru([lag, 64, 64, 1])
+            train_model(m, X_train, y_train, name, config)
+        if args.model == 'saes':
+            X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1]))
+            m = model.get_saes([lag, 400, 400, 400, 1])
+            train_seas(m, X_train, y_train, name, config)
+        if args.model == 'rnn':
+            X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
+            m = model.get_rnn([lag, 64, 64, 1])
+            train_model(m, X_train, y_train, name, config)
 
 
 if __name__ == '__main__':
