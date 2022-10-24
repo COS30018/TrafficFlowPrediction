@@ -120,8 +120,8 @@ def parse_csv(filename="boroondara.csv"):
         
     
     # print(scats_sites_with_road_names)
-    for scats in scats_list:
-        scats.print_debug()
+    # for scats in scats_list:
+    #     scats.print_debug()
     return scats_list
 
 def parse_string_to_roads(roads_string):

@@ -132,6 +132,8 @@ def search_scats(scats_list, scats_number):
     for scats in scats_list:
         if(scats.number == scats_number):
             return scats
+        
+    return None
 
 def print_solution(solution):
     solution.reverse()
@@ -163,6 +165,14 @@ def main():
     start_point = search_scats(scats_list,start_num)
     end_point = search_scats(scats_list,end_num)
     
+    if(start_point is None):
+        print('Start point not found')
+        exit()
+    
+    if(end_point is None):
+        print('End point not found')
+        exit()
+        
     solutions = A_star_search.search(start_point,end_point)
     if(len(solutions)==0):
         print("No possible paths found")
