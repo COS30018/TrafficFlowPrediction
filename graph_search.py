@@ -1,9 +1,5 @@
-from cmath import cos
-from turtle import distance
-from typing_extensions import Self
 import geopy.distance
 from map_parser import parse_csv
-from map_parser import SCATS
 DEFAULT_SPEED = 60
 
 class Node:

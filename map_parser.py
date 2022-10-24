@@ -1,7 +1,4 @@
-from operator import index
-from tokenize import String
 import pandas as pd
-import numpy as np
 
 class SCATS:
     def __init__(self,number,longitude,latitude):
@@ -48,7 +45,7 @@ class SCATS:
         
         return False
         
-def parse_csv(filename="boroondara.csv"):
+def parse_csv(filename="data/boroondara.csv"):
     #read df
     scats_df = pd.read_csv(filename, encoding='utf-8').fillna(0)
     #delete the time columns
