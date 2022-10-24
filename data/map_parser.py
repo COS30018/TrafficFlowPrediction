@@ -119,9 +119,10 @@ def parse_csv(filename="boroondara.csv"):
 
         
     
+    # print(scats_sites_with_road_names)
     for scats in scats_list:
         scats.print_debug()
-    # print(scats_sites_with_road_names)
+    return scats_list
 
 def parse_string_to_roads(roads_string):
     splitted_data = split((str(roads_string)),[" of ", " OF "])
