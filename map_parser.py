@@ -1,3 +1,4 @@
+from unicodedata import numeric
 import pandas as pd
 
 class SCATS:
@@ -54,10 +55,10 @@ def parse_csv(filename="data/boroondara.csv"):
     #take only the necessary columns
     scats_df = scats_df[df_subset]
     #calculate mean coordinates of each scats site with Location
-    scats_df = scats_df.groupby(by=['SCATS Number','Location'],).mean().reset_index()
+    scats_df = scats_df.groupby(by=['SCATS Number','Location'],).mean(numeric_only=True).reset_index()
     
     #make 2 subsets: 1 with longlat and 1 with road name
-    scats_sites_with_long_lat = scats_df.groupby(by=['SCATS Number']).mean().reset_index()
+    scats_sites_with_long_lat = scats_df.groupby(by=['SCATS Number']).mean(numeric_only=True).reset_index()
     
     scats_sites_with_road_names = scats_df[['SCATS Number','Location']]
     
