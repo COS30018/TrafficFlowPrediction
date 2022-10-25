@@ -1,12 +1,8 @@
-from doctest import master
-from enum import unique
-from http.client import PAYMENT_REQUIRED
-from re import sub
 import tkinter as tk
 from tkinter import ttk
-from click import command
 import tkintermapview
 import pandas as pd
+import graph_search as gs
 
 
 class MapGUI(tk.Tk):
@@ -58,7 +54,32 @@ class MapGUI(tk.Tk):
         self.frame_menu.pack(side=tk.BOTTOM)
     
     def generate_route(self):
-        print(str(self.dropdown_start_selected.get()) +" : "+str(self.dropdown_dest_selected.get()))
+        scats_list = gs.parse_csv()
+        
+        A_star_search = gs.SearchAStar()
+        
+        start_num = self.dropdown_start_selected.get()
+        
+        end_num = self.dropdown_dest_selected.get()
+        
+        start_point = gs.search_scats(scats_list,start_num)
+        end_point = gs.search_scats(scats_list,end_num)
+        
+        if(start_point is None):
+            print('Start point not found')
+            exit()
+        
+        if(end_point is None):
+            print('End point not found')
+            exit()
+            
+        solutions = A_star_search.search(start_point,end_point)
+        if(len(solutions)==0):
+            print("No possible paths found")
+        else:
+            for solution in solutions:
+                gs.print_solution(solution)
+    
     
     def start(self):
         self.mainloop()
