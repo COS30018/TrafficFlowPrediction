@@ -79,6 +79,14 @@ class MapGUI(tk.Tk):
         else:
             for solution in solutions:
                 gs.print_solution(solution)
+                path_coords = []
+                for point in solution:
+                    print("")
+                    path_coords.append((point.scats.latitude, point.scats.longitude))
+
+                path = self.map_widget.set_path(path_coords)
+
+                print("")
     
     
     def start(self):
