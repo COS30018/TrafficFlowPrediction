@@ -41,7 +41,7 @@ class MapGUI(tk.Tk):
         ## Starting SCATS input
         self.dropdown_start_selected = tk.StringVar()
         self.dropdown_start = ttk.Combobox(master=self.frame_menu, textvariable=self.dropdown_start_selected, values=self.unique_scats, state='readonly')
-        self.dropdown_start.pack(side='left', padx=20, pady=20)
+        self.dropdown_start.pack(side=tk.LEFT, padx=20, pady=20)
         ## Destination SCATS input
         self.dropdown_dest_selected = tk.StringVar()
         self.dropdown_dest = ttk.Combobox(master=self.frame_menu, textvariable=self.dropdown_dest_selected, values=self.unique_scats, state='readonly')
@@ -49,7 +49,7 @@ class MapGUI(tk.Tk):
         
     
         self.frame_map.pack()
-        self.frame_menu.pack(side="bottom")
+        self.frame_menu.pack(side=tk.BOTTOM)
     
     def start(self):
         self.mainloop()
