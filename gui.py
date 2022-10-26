@@ -63,20 +63,13 @@ class MapGUI(tk.Tk):
         end_num = self.dropdown_dest_selected.get()
         
         start_point = gs.search_scats(scats_list,start_num)
-        end_point = gs.search_scats(scats_list,end_num)
+        end_point   = gs.search_scats(scats_list,end_num)
         
-        if(start_point is None):
-            print('Start point not found')
-            exit()
-        
-        if(end_point is None):
-            print('End point not found')
-            exit()
-            
         solutions = A_star_search.search(start_point,end_point)
         if(len(solutions)==0):
             print("No possible paths found")
         else:
+            paths = []
             for solution in solutions:
                 gs.print_solution(solution)
                 path_coords = []
@@ -84,7 +77,7 @@ class MapGUI(tk.Tk):
                     print("")
                     path_coords.append((point.scats.latitude, point.scats.longitude))
 
-                path = self.map_widget.set_path(path_coords)
+                paths.append(self.map_widget.set_path(path_coords))
 
                 print("")
     
