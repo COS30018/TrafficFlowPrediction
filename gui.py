@@ -1,3 +1,4 @@
+from importlib.resources import path
 import tkinter as tk
 from tkinter import ttk
 import tkintermapview
@@ -28,7 +29,7 @@ class MapGUI(tk.Tk):
         self.markers = {}
         for _, row in unique_sites_df.iterrows():
             new_marker = self.map_widget.set_marker(row['NB_LATITUDE'], row['NB_LONGITUDE'])
-            #new_marker.set_text("SCATS: "+str(row['SCATS Number'])+"\nLocation: "+row['Location'])
+            new_marker.set_text(str(row['SCATS Number']))
             self.markers[row['SCATS Number']] = {row['Location'] : new_marker}
             
         # Pack map widget
@@ -45,15 +46,23 @@ class MapGUI(tk.Tk):
         self.dropdown_dest = ttk.Combobox(master=self.frame_menu, textvariable=self.dropdown_dest_selected, values=self.unique_scats, state='readonly')
         self.dropdown_dest.pack(side=tk.LEFT, padx=20, pady=20)
         ## Navigate button
-        self.nav_button = tk.Button(master=self.frame_menu, text="Navigate", command=self.generate_route)
-        self.nav_button.pack(padx=20, pady=20)
+        self.routes = [] # Found routes
+        self.path = None # Currently shown path
+        self.nav_button = tk.Button(master=self.frame_menu, text="Navigate", command=self.generate_routes)
+        self.nav_button.pack(side=tk.LEFT, padx=20, pady=20)
+        ## Route selection dropdown
+        self.dropdown_route_selected = tk.IntVar()
+        self.dropdown_route_values = []
+        self.dropdown_route = ttk.Combobox(master=self.frame_menu, textvariable=self.dropdown_route_selected, values=self.dropdown_route_values, state='readonly' )
+        self.dropdown_route.pack(padx=20, pady=20)
         
     
         # Pack frames
         self.frame_map.pack()
         self.frame_menu.pack(side=tk.BOTTOM)
     
-    def generate_route(self):
+    def generate_routes(self):
+        self.routes.clear()
         scats_list = gs.parse_csv()
         
         A_star_search = gs.SearchAStar()
@@ -69,17 +78,15 @@ class MapGUI(tk.Tk):
         if(len(solutions)==0):
             print("No possible paths found")
         else:
-            paths = []
             for solution in solutions:
                 gs.print_solution(solution)
                 path_coords = []
                 for point in solution:
-                    print("")
                     path_coords.append((point.scats.latitude, point.scats.longitude))
 
-                paths.append(self.map_widget.set_path(path_coords))
+                self.routes.append(path_coords)
+                self.dropdown_route['values'] = list(range(1, len(self.routes)+1))
 
-                print("")
     
     
     def start(self):
