@@ -54,6 +54,7 @@ class MapGUI(tk.Tk):
         self.dropdown_route_selected = tk.IntVar()
         self.dropdown_route_values = []
         self.dropdown_route = ttk.Combobox(master=self.frame_menu, textvariable=self.dropdown_route_selected, values=self.dropdown_route_values, state='readonly' )
+        self.dropdown_route.bind('<<ComboboxSelected>>', self.draw_path)
         self.dropdown_route.pack(padx=20, pady=20)
         
     
@@ -82,10 +83,18 @@ class MapGUI(tk.Tk):
                 gs.print_solution(solution)
                 path_coords = []
                 for point in solution:
+                    # TODO: Missing start and end coords
                     path_coords.append((point.scats.latitude, point.scats.longitude))
 
                 self.routes.append(path_coords)
                 self.dropdown_route['values'] = list(range(1, len(self.routes)+1))
+    
+    def draw_path(self, _):
+
+        if (self.path != None):
+            self.path.delete()
+
+        self.path = self.map_widget.set_path(self.routes[self.dropdown_route_selected.get()-1])
 
     
     
