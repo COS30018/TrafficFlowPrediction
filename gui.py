@@ -81,11 +81,11 @@ class MapGUI(tk.Tk):
         else:
             for solution in solutions:
                 gs.print_solution(solution)
-                path_coords = []
+                path_coords = [(start_point.latitude, start_point.longitude)]
                 for point in solution:
-                    # TODO: Missing start and end coords
                     path_coords.append((point.scats.latitude, point.scats.longitude))
 
+                path_coords.append((end_point.latitude, end_point.longitude))
                 self.routes.append(path_coords)
                 self.dropdown_route['values'] = list(range(1, len(self.routes)+1))
     
