@@ -3,6 +3,8 @@ from tkinter import ttk
 import tkintermapview
 import pandas as pd
 import graph_search as gs
+from geopy.geocoders import Nominatim
+import requests
 
 
 class MapGUI(tk.Tk):
@@ -52,7 +54,27 @@ class MapGUI(tk.Tk):
         # Pack frames
         self.frame_map.pack()
         self.frame_menu.pack(side=tk.BOTTOM)
-    
+
+
+    def get_lat_long_from_address(address):
+        if type(address) == str :
+            locator = Nominatim(user_agent='myGeocoder')
+            location = locator.geocode(address)
+            return location.latitude, location.longitude
+        else :
+            return address 
+
+    def get_directions_response(lat1, long1, lat2, long2, mode='drive'):
+        url = "https://route-and-directions.p.rapidapi.com/v1/routing"
+        key = "ab885194e0mshfeb1f467af853bcp19b10bjsn5a46125b5464"
+        host = "route-and-directions.p.rapidapi.com"
+        headers = {"X-RapidAPI-Key": key, "X-RapidAPI-Host": host}
+        querystring = {"waypoints":f"{str(lat1)},{str(long1)}|{str(lat2)},{str(long2)}","mode":mode}
+        response = requests.request("GET", url, headers=headers, params=querystring)
+        return response
+
+
+
     def generate_route(self):
         scats_list = gs.parse_csv()
         
@@ -85,6 +107,32 @@ class MapGUI(tk.Tk):
                     path_coords.append((point.scats.latitude, point.scats.longitude))
 
                 path = self.map_widget.set_path(path_coords)
+
+                
+                lat_lons = [self.get_lat_long_from_address(addr) for addr in path_coords]
+
+                responses = []
+                for n in range(len(lat_lons)-1):
+                    lat1, lon1, lat2, lon2 = lat_lons[n][0], lat_lons[n][1], lat_lons[n+1][0], lat_lons[n+1][1]
+                    response = self.get_directions_response(lat1, lon1, lat2, lon2, mode='drive')
+                    responses.append(response)
+
+                df = pd.DataFrame()
+                # add markers for the places we visit
+                for point in lat_lons:
+                    #this for loop can add markers to every 'visit' location 
+                    #folium.Marker(point, popup="[" + str(point[0]) + ", " + str(point[1]) + "]").add_to(m)
+                    break
+                # loop over the responses and plot the lines of the route
+                for response in responses:
+                  mls = response.json()['features'][0]['geometry']['coordinates']
+                  points = [(i[1], i[0]) for i in mls[0]]
+  
+                  # add the lines
+                  self.map_widget.set_path(points)
+                  #folium.PolyLine(points, weight=5, opacity=1).add_to(m)
+                  temp = pd.DataFrame(mls[0]).rename(columns={0:'Lon', 1:'Lat'})[['Lat', 'Lon']]
+                  df = pd.concat([df, temp])
 
                 print("")
     
