@@ -1,6 +1,7 @@
 from importlib.resources import path
 import tkinter as tk
 from tkinter import ttk
+from matplotlib.pyplot import sca
 import tkintermapview
 import pandas as pd
 import graph_search as gs
@@ -66,7 +67,9 @@ class MapGUI(tk.Tk):
         self.routes.clear()
         scats_list = gs.parse_csv()
         
-        A_star_search = gs.SearchAStar()
+        data_df, scaler = gs.process_data()
+
+        A_star_search = gs.SearchAStar(data_df=data_df, scaler=scaler)
         
         start_num = self.dropdown_start_selected.get()
         
