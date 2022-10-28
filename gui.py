@@ -95,8 +95,8 @@ class MapGUI(tk.Tk):
         
         end_num = self.dropdown_dest_selected.get()
         
-        start_point = gs.search_scats(scats_list,970)#start_num)
-        end_point   = gs.search_scats(scats_list,2820)#end_num)
+        start_point = gs.search_scats(scats_list,start_num)
+        end_point   = gs.search_scats(scats_list,end_num)
         
         solutions = A_star_search.search(start_point,end_point)
         if(len(solutions)==0):
@@ -141,8 +141,7 @@ class MapGUI(tk.Tk):
 
     
     
-    def start(self):
-        self.generate_routes()
+    def start(self): 
         self.mainloop()
         
 
