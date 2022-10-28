@@ -4,7 +4,8 @@ from tkinter import ttk
 from matplotlib.pyplot import sca
 import tkintermapview
 import pandas as pd
-import requests
+import requests 
+from geopy.geocoders import Nominatim
 
 import graph_search as gs
 
