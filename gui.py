@@ -112,8 +112,7 @@ class MapGUI(tk.Tk):
                 for point in solution: 
                     path_coords.append((point.scats.latitude, point.scats.longitude))
 
-                #path = self.map_widget.set_path(path_coords)
-
+                #path = self.map_widget.set_path(path_coords) 
                 
                 lat_lons = [self.get_lat_long_from_address(addr) for addr in path_coords]
 
@@ -143,8 +142,7 @@ class MapGUI(tk.Tk):
                 print("")
                 #gs.print_solution(solution)
     
-    def start(self):
-        self.generate_route()
+    def start(self): 
         self.mainloop()
         
 
