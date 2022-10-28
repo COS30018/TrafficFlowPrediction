@@ -23,7 +23,7 @@ class MapGUI(tk.Tk):
         
         # Set up map
         self.frame_map = tk.Frame()
-        self.map_widget = tkintermapview.TkinterMapView(self.frame_map, width=1600, height=1200, corner_radius=0)
+        self.map_widget = tkintermapview.TkinterMapView(self.frame_map, width=1000, height=500, corner_radius=0)
         self.map_widget.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
         self.map_widget.set_position(-37.8236299, 145.0699878)  # Paris, France
         self.map_widget.set_zoom(14)
@@ -103,8 +103,8 @@ class MapGUI(tk.Tk):
             print("No possible paths found")
         else:
             for solution in solutions:
-                gs.print_solution(solution)
-                path_coords = [(start_point.latitude, start_point.longitude)]
+                gs.print_solution(solution) 
+                path_coords = [start_point.latitude, start_point.longitude]
                 for point in solution:
                     path_coords.append((point.scats.latitude, point.scats.longitude))
 
@@ -123,15 +123,18 @@ class MapGUI(tk.Tk):
                 #for point in lat_lons
                 # loop over the responses and plot the lines of the route
                 points = []
+                print("path = ") 
                 for response in responses:
                   mls = response.json()['features'][0]['geometry']['coordinates']
                   points = [(i[1], i[0]) for i in mls[0]]
-                   
-                  #self.map_widget.set_path(points) 
+                  
                 
-                #add points to routes? perhaps?
+                  #self.map_widget.set_path(points) 
+                 
                 self.routes.append(points)
                 self.dropdown_route['values'] = list(range(1, len(self.routes)+1))
+                self.path = self.map_widget.set_path(self.routes[0]) #draw the first route when done
+            print("done")
     def draw_path(self, _):
 
         if (self.path != None):
