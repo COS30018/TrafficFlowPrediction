@@ -32,7 +32,7 @@ class MapGUI(tk.Tk):
             new_marker = self.map_widget.set_marker(row['NB_LATITUDE'], row['NB_LONGITUDE'])
             #new_marker.set_text("SCATS: "+str(row['SCATS Number'])+"\nLocation: "+row['Location'])
             self.markers[row['SCATS Number']] = {row['Location'] : new_marker}
-            
+         
         # Pack map widget
         self.map_widget.pack()
     
@@ -49,14 +49,13 @@ class MapGUI(tk.Tk):
         ## Navigate button
         self.nav_button = tk.Button(master=self.frame_menu, text="Navigate", command=self.generate_route)
         self.nav_button.pack(padx=20, pady=20)
-        
     
         # Pack frames
         self.frame_map.pack()
         self.frame_menu.pack(side=tk.BOTTOM)
 
 
-    def get_lat_long_from_address(address):
+    def get_lat_long_from_address(self, address):
         if type(address) == str :
             locator = Nominatim(user_agent='myGeocoder')
             location = locator.geocode(address)
@@ -64,7 +63,7 @@ class MapGUI(tk.Tk):
         else :
             return address 
 
-    def get_directions_response(lat1, long1, lat2, long2, mode='drive'):
+    def get_directions_response(self, lat1, long1, lat2, long2, mode='Drive'):
         url = "https://route-and-directions.p.rapidapi.com/v1/routing"
         key = "ab885194e0mshfeb1f467af853bcp19b10bjsn5a46125b5464"
         host = "route-and-directions.p.rapidapi.com"
@@ -78,12 +77,19 @@ class MapGUI(tk.Tk):
     def generate_route(self):
         scats_list = gs.parse_csv()
         
-        A_star_search = gs.SearchAStar()
+        A_star_search = gs.SearchAStar(7)
         
         start_num = self.dropdown_start_selected.get()
+
+        #970 - 2827
+        #4821 - 2000
+        #3180 - 4812
+        #4812 - 3180
+        #start_num = 4812
         
         end_num = self.dropdown_dest_selected.get()
-        
+        #end_num = 3180
+
         start_point = gs.search_scats(scats_list,start_num)
         end_point = gs.search_scats(scats_list,end_num)
         
@@ -99,14 +105,14 @@ class MapGUI(tk.Tk):
         if(len(solutions)==0):
             print("No possible paths found")
         else:
+            print("amt of solutions: " + str(len(solutions)))
             for solution in solutions:
-                gs.print_solution(solution)
-                path_coords = []
-                for point in solution:
-                    print("")
+                
+                path_coords = [] 
+                for point in solution: 
                     path_coords.append((point.scats.latitude, point.scats.longitude))
 
-                path = self.map_widget.set_path(path_coords)
+                #path = self.map_widget.set_path(path_coords)
 
                 
                 lat_lons = [self.get_lat_long_from_address(addr) for addr in path_coords]
@@ -114,7 +120,7 @@ class MapGUI(tk.Tk):
                 responses = []
                 for n in range(len(lat_lons)-1):
                     lat1, lon1, lat2, lon2 = lat_lons[n][0], lat_lons[n][1], lat_lons[n+1][0], lat_lons[n+1][1]
-                    response = self.get_directions_response(lat1, lon1, lat2, lon2, mode='drive')
+                    response = self.get_directions_response(lat1, lon1, lat2, lon2, mode='walk')
                     responses.append(response)
 
                 df = pd.DataFrame()
@@ -135,9 +141,10 @@ class MapGUI(tk.Tk):
                   df = pd.concat([df, temp])
 
                 print("")
-    
+                #gs.print_solution(solution)
     
     def start(self):
+        self.generate_route()
         self.mainloop()
         
 

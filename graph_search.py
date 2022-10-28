@@ -132,6 +132,7 @@ def search_scats(scats_list, scats_number):
     return None
 
 def print_solution(solution):
+    print("Printing solutions, this function should never be called.")
     solution.reverse()
     path = ""
     first_node = solution.pop(0)
