@@ -127,7 +127,7 @@ class MapGUI(tk.Tk):
                   mls = response.json()['features'][0]['geometry']['coordinates']
                   points = [(i[1], i[0]) for i in mls[0]]
                    
-                  self.map_widget.set_path(points) 
+                  #self.map_widget.set_path(points) 
                 
                 #add points to routes? perhaps?
                 self.routes.append(points)
