@@ -1,6 +1,6 @@
 from importlib.resources import path
 import tkinter as tk
-from tkinter import ttk
+from tkinter import Label, ttk
 from matplotlib.pyplot import sca
 import tkintermapview
 import pandas as pd
@@ -41,10 +41,16 @@ class MapGUI(tk.Tk):
     
         # Set up menu
         self.frame_menu = tk.Frame()
+        ## Starting SCATS label
+        self.start_label = Label(master=self.frame_menu, text="Start:")
+        self.start_label.pack(side=tk.LEFT)
         ## Starting SCATS input
         self.dropdown_start_selected = tk.IntVar()
         self.dropdown_start = ttk.Combobox(master=self.frame_menu, textvariable=self.dropdown_start_selected, values=self.unique_scats, state='readonly')
         self.dropdown_start.pack(side=tk.LEFT, padx=20, pady=20)
+        ## Destination SCATS label
+        self.dest_label = Label(master=self.frame_menu, text="Destination:")
+        self.dest_label.pack(side=tk.LEFT)
         ## Destination SCATS input
         self.dropdown_dest_selected = tk.IntVar()
         self.dropdown_dest = ttk.Combobox(master=self.frame_menu, textvariable=self.dropdown_dest_selected, values=self.unique_scats, state='readonly')
@@ -54,13 +60,15 @@ class MapGUI(tk.Tk):
         self.path = None # Currently shown path
         self.nav_button = tk.Button(master=self.frame_menu, text="Navigate", command=self.generate_routes)
         self.nav_button.pack(side=tk.LEFT, padx=20, pady=20)
+        ## Route selection label
+        self.route_label = Label(master=self.frame_menu, text="Route:")
+        self.route_label.pack(side=tk.LEFT)
         ## Route selection dropdown
         self.dropdown_route_selected = tk.IntVar()
         self.dropdown_route_values = []
         self.dropdown_route = ttk.Combobox(master=self.frame_menu, textvariable=self.dropdown_route_selected, values=self.dropdown_route_values, state='readonly' )
         self.dropdown_route.bind('<<ComboboxSelected>>', self.draw_path)
-        self.dropdown_route.pack(padx=20, pady=20)
-        
+        self.dropdown_route.pack(side=tk.LEFT, padx=20, pady=20)
     
         # Pack frames
         self.frame_map.pack()
