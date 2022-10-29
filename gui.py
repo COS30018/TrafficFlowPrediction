@@ -103,18 +103,6 @@ class MapGUI(tk.Tk):
             print("No possible paths found")
         else:
             for solution in solutions:
-                '''
-                gs.print_solution(solution)
-                path_coords = [(start_point.latitude, start_point.longitude)]
-                for point in solution:
-                    path_coords.append((point.scats.latitude, point.scats.longitude))
-
-                path_coords.append((end_point.latitude, end_point.longitude))
-                self.routes.append(path_coords)
-                self.dropdown_route['values'] = list(range(1, len(self.routes)+1))
-
-                '''
-
 
                 gs.print_solution(solution) 
                 path_coords = [(start_point.latitude, start_point.longitude)]
@@ -122,17 +110,13 @@ class MapGUI(tk.Tk):
                     path_coords.append((point.scats.latitude, point.scats.longitude))
 
                 path_coords.append((end_point.latitude, end_point.longitude))
-                #self.routes.append(path_coords)
-                 
-                #path = self.map_widget.set_path(path_coords) 
-                
-                #lat_lons = [self.get_lat_long_from_address(addr) for addr in path_coords]
 
                 responses = []
                 for n in range(len(path_coords)-1):
                     lat1, lon1, lat2, lon2 = path_coords[n][0], path_coords[n][1], path_coords[n+1][0], path_coords[n+1][1]
                     response = self.get_directions_response(lat1, lon1, lat2, lon2, mode='drive')
                     responses.append(response)
+
                 #for point in lat_lons
                 # loop over the responses and plot the lines of the route
                 points = []
@@ -142,13 +126,13 @@ class MapGUI(tk.Tk):
                   mls = response.json()['features'][0]['geometry']['coordinates']
                   points = [(i[1], i[0]) for i in mls[0]]
                   thisRoute = thisRoute + points
-                  #self.map_widget.set_path(points) 
                 
                 print("length = " + str(len(thisRoute)))
                 self.routes.append(thisRoute)
                 self.dropdown_route['values'] = list(range(1, len(self.routes)+1))
-                #self.path = self.map_widget.set_path(self.routes[0]) #draw the first route when done
+
             print("done")
+
     def draw_path(self, _):
 
         if (self.path != None):
