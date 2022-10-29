@@ -158,9 +158,19 @@ class MapGUI(tk.Tk):
             self.path.delete()
 
         self.path = self.map_widget.set_path(self.routes[self.dropdown_route_selected.get()-1])
-        self.time_est_value.set(self.total_seconds[self.dropdown_route_selected.get()-1])
+        time = self.to_mins(self.total_seconds[self.dropdown_route_selected.get()-1])
+        self.time_est_value.set(time)
         
         print("blah")
+        
+    def to_mins(self, seconds):
+        seconds = seconds % (24 * 3600)
+        seconds %= 3600
+        minutes = seconds // 60
+        seconds %= 60
+         
+        return "%02d mins, %02d secs" % (minutes, seconds)
+        
 
     
     
