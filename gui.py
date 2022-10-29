@@ -140,17 +140,15 @@ class MapGUI(tk.Tk):
                 # loop over the responses and plot the lines of the route
                 points = []
                 thisRoute = []
-                print("path = ") 
                 for response in responses:
                   mls = response.json()['features'][0]['geometry']['coordinates']
                   points = [(i[1], i[0]) for i in mls[0]]
                   thisRoute = thisRoute + points
                 
-                print("length = " + str(len(thisRoute)))
                 self.routes.append(thisRoute)
                 self.dropdown_route['values'] = list(range(1, len(self.routes)+1))
 
-            print("done")
+            print("Found routes")
 
     def draw_path(self, _):
 
@@ -161,7 +159,6 @@ class MapGUI(tk.Tk):
         time = self.to_mins(self.total_seconds[self.dropdown_route_selected.get()-1])
         self.time_est_value.set(time)
         
-        print("blah")
         
     def to_mins(self, seconds):
         seconds = seconds % (24 * 3600)
