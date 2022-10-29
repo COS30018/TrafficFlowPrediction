@@ -69,6 +69,14 @@ class MapGUI(tk.Tk):
         self.dropdown_route = ttk.Combobox(master=self.frame_menu, textvariable=self.dropdown_route_selected, values=self.dropdown_route_values, state='readonly' )
         self.dropdown_route.bind('<<ComboboxSelected>>', self.draw_path)
         self.dropdown_route.pack(side=tk.LEFT, padx=20, pady=20)
+        ## Route time label
+        self.time_label = Label(master=self.frame_menu, text="Time:")
+        self.time_label.pack(side=tk.LEFT)
+        ## Route time estimation
+        self.total_seconds = [] # Time for found routes
+        self.time_est_value = tk.IntVar()
+        self.time_est = Label(master=self.frame_menu, textvariable=self.time_est_value)
+        self.time_est.pack(side=tk.LEFT)
     
         # Pack frames
         self.frame_map.pack()
@@ -93,6 +101,7 @@ class MapGUI(tk.Tk):
 
     def generate_routes(self):
         self.routes.clear()
+        self.total_seconds.clear()
         scats_list = gs.parse_csv()
         
         data_df, scaler = gs.process_data()
@@ -111,6 +120,8 @@ class MapGUI(tk.Tk):
             print("No possible paths found")
         else:
             for solution in solutions:
+                
+                self.total_seconds.append(int(solution[0].cost))
 
                 gs.print_solution(solution) 
                 path_coords = [(start_point.latitude, start_point.longitude)]
@@ -147,6 +158,9 @@ class MapGUI(tk.Tk):
             self.path.delete()
 
         self.path = self.map_widget.set_path(self.routes[self.dropdown_route_selected.get()-1])
+        self.time_est_value.set(self.total_seconds[self.dropdown_route_selected.get()-1])
+        
+        print("blah")
 
     
     
