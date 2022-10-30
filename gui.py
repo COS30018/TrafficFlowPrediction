@@ -20,10 +20,11 @@ class MapGUI(tk.Tk):
         
         # Set up root window
         tk.Tk.__init__(self, *args, **kwargs)
+        self.title("COS30018 Option 3 Topic 3")
         
         # Set up map
         self.frame_map = tk.Frame()
-        self.map_widget = tkintermapview.TkinterMapView(self.frame_map, width=1000, height=500, corner_radius=0)
+        self.map_widget = tkintermapview.TkinterMapView(self.frame_map, width=3840, height=2160, corner_radius=0)
         self.map_widget.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
         self.map_widget.set_position(-37.8236299, 145.0699878)  # Paris, France
         self.map_widget.set_zoom(14)
@@ -47,19 +48,19 @@ class MapGUI(tk.Tk):
         ## Starting SCATS input
         self.dropdown_start_selected = tk.IntVar()
         self.dropdown_start = ttk.Combobox(master=self.frame_menu, textvariable=self.dropdown_start_selected, values=self.unique_scats, state='readonly')
-        self.dropdown_start.pack(side=tk.LEFT, padx=20, pady=20)
+        self.dropdown_start.pack(side=tk.LEFT, padx=20 )
         ## Destination SCATS label
         self.dest_label = Label(master=self.frame_menu, text="Destination:")
         self.dest_label.pack(side=tk.LEFT)
         ## Destination SCATS input
         self.dropdown_dest_selected = tk.IntVar()
         self.dropdown_dest = ttk.Combobox(master=self.frame_menu, textvariable=self.dropdown_dest_selected, values=self.unique_scats, state='readonly')
-        self.dropdown_dest.pack(side=tk.LEFT, padx=20, pady=20)
+        self.dropdown_dest.pack(side=tk.LEFT, padx=20)
         ## Navigate button
         self.routes = [] # Found routes
         self.path = None # Currently shown path
         self.nav_button = tk.Button(master=self.frame_menu, text="Navigate", command=self.generate_routes)
-        self.nav_button.pack(side=tk.LEFT, padx=20, pady=20)
+        self.nav_button.pack(side=tk.LEFT, padx=20)
         ## Route selection label
         self.route_label = Label(master=self.frame_menu, text="Route:")
         self.route_label.pack(side=tk.LEFT)
@@ -68,7 +69,7 @@ class MapGUI(tk.Tk):
         self.dropdown_route_values = []
         self.dropdown_route = ttk.Combobox(master=self.frame_menu, textvariable=self.dropdown_route_selected, values=self.dropdown_route_values, state='readonly' )
         self.dropdown_route.bind('<<ComboboxSelected>>', self.draw_path)
-        self.dropdown_route.pack(side=tk.LEFT, padx=20, pady=20)
+        self.dropdown_route.pack(side=tk.LEFT, padx=20)
         ## Route time label
         self.time_label = Label(master=self.frame_menu, text="Time:")
         self.time_label.pack(side=tk.LEFT)
@@ -79,8 +80,8 @@ class MapGUI(tk.Tk):
         self.time_est.pack(side=tk.LEFT)
     
         # Pack frames
+        self.frame_menu.pack(side=tk.BOTTOM, pady=20)
         self.frame_map.pack(side=tk.TOP)
-        self.frame_menu.pack(side=tk.BOTTOM)
         self.frame_menu.tkraise()
     
     def get_lat_long_from_address(self, address):
