@@ -73,7 +73,7 @@ def plot_results(y_true, y_preds, names, scats_str):
         names: List, Method names.
     """
     d = '2016-3-4 00:00'
-    x = pd.date_range(d, periods=276, freq='5min')
+    x = pd.date_range(d, periods=96, freq='5min')
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -91,7 +91,7 @@ def plot_results(y_true, y_preds, names, scats_str):
     ax.xaxis.set_major_formatter(date_format)
     fig.autofmt_xdate()
 
-    plt.show()
+    #plt.show()
 
     plt.savefig('images/'+scats_str+'/Result.png')
 
@@ -135,12 +135,12 @@ def main():
 
             predicted = model.predict(X_test)
             predicted = scaler.inverse_transform(predicted.reshape(-1, 1)).reshape(1, -1)[0]
-            y_preds.append(predicted[:276])
+            y_preds.append(predicted[:96])
             print(name)
             
             eva_regress(y_test, predicted)
     
-        plot_results(y_test[: 276], y_preds, names, scats_str)
+        plot_results(y_test[: 96], y_preds, names, scats_str)
 
 
 if __name__ == '__main__':
