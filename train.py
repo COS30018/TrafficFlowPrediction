@@ -86,7 +86,7 @@ def main(argv):
     args = parser.parse_args()
 
     lag = 12
-    config = {"batch": 256, "epochs": 1}
+    config = {"batch": 256, "epochs": 100}
     data_df = pd.read_csv('data/boroondara.csv', encoding='utf-8').fillna(0) # Dataframe of boroondara data
     
     # Break dataframe into different SCATS

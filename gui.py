@@ -79,8 +79,9 @@ class MapGUI(tk.Tk):
         self.time_est.pack(side=tk.LEFT)
     
         # Pack frames
-        self.frame_map.pack()
+        self.frame_map.pack(side=tk.TOP)
         self.frame_menu.pack(side=tk.BOTTOM)
+        self.frame_menu.tkraise()
     
     def get_lat_long_from_address(self, address):
         if type(address) == str :
